@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import * as XLSX from "xlsx";
 
 // ── helpers ──────────────────────────────────────────────────────────────────
@@ -699,11 +699,12 @@ function DataFuse() {
   const filteredMerged = merged ? applyFilters(merged, mergedFilters) : [];
 
   // Try to auto-suggest join columns when a shared col is detected
-  const autoSuggest = sharedCols.length > 0 && !joinColA && !joinColB;
-  if (autoSuggest) {
-    setJoinColA(sharedCols[0]);
-    setJoinColB(sharedCols[0]);
-  }
+  useEffect(() => {
+    if (sharedCols.length > 0 && !joinColA && !joinColB) {
+      setJoinColA(sharedCols[0]);
+      setJoinColB(sharedCols[0]);
+    }
+  }, [sharedCols.join(","), joinColA, joinColB]);
 
   return (
     <div>
